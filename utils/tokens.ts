@@ -1,0 +1,70 @@
+import {
+  ACCESS_MAX_AGE,
+  ACCESS_TOKEN,
+  REFRESH_MAX_AGE,
+  REFRESH_TOKEN,
+} from '@/constants'
+import { serialize } from 'cookie'
+import { sign, verify } from 'jsonwebtoken'
+
+interface SetToken {
+  user: any
+  maxAge?: any
+
+}
+
+export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
+  const secret = process.env.JWT_SECRET || ''
+
+  const token = sign(
+    {
+      user,
+    },
+    secret,
+    {
+      expiresIn: '2d',
+    }
+  )
+
+  const accessTokenSerialize = serialize(ACCESS_TOKEN, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge, // would expire after 1 days,
+    path: '/',
+    priority: 'medium',
+  })
+  return accessTokenSerialize
+}
+
+export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
+  const secret = process.env.JWT_SECRET || ''
+  const token = sign(
+    {
+      user,
+    },
+    secret,
+    {
+      expiresIn: '1y',
+    }
+  )
+
+  const refreshTokenSerialize = serialize(REFRESH_TOKEN, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge, // would expire after 1 year
+    path: '/',
+    priority: 'medium',
+  })
+  return refreshTokenSerialize
+}
+
+export function cookieVerify(cookie: any) {
+  const accessToken = cookie.get(ACCESS_TOKEN)||''
+  const refreshToken = cookie.get(REFRESH_TOKEN)
+  const secret = process.env.JWT_SECRET || ''
+  const value: any = accessToken?.value||refreshToken?.value
+  const user: any = verify(value, secret) || {}
+  return { value, user, accessToken, refreshToken, secret }
+}
