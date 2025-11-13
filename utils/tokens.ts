@@ -10,7 +10,28 @@ import { sign, verify } from 'jsonwebtoken'
 interface SetToken {
   user: any
   maxAge?: any
+}
 
+// تابع کمکی برای گرفتن تنظیمات کوکی
+const getCookieOptions = (maxAge?: number) => {
+  const options: any = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    priority: 'medium',
+  }
+  
+  // فقط اگر domain تعریف شده باشد اضافه کن
+  if (process.env.COOKIE_DOMAIN) {
+    options.domain = process.env.COOKIE_DOMAIN
+  }
+  
+  if (maxAge !== undefined) {
+    options.maxAge = maxAge
+  }
+  
+  return options
 }
 
 export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
@@ -26,15 +47,11 @@ export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
     }
   )
 
-  const accessTokenSerialize = serialize(ACCESS_TOKEN, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge, // would expire after 1 days,
-    path: '/',
-    priority: 'medium',
-    domain: process.env.COOKIE_DOMAIN
-  })
+  const accessTokenSerialize = serialize(
+    ACCESS_TOKEN, 
+    token, 
+    getCookieOptions(maxAge)
+  )
   return accessTokenSerialize
 }
 
@@ -50,45 +67,55 @@ export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
     }
   )
 
-  const refreshTokenSerialize = serialize(REFRESH_TOKEN, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge, // would expire after 1 year
-    path: '/',
-    priority: 'medium',
-    domain: process.env.COOKIE_DOMAIN
-  })
+  const refreshTokenSerialize = serialize(
+    REFRESH_TOKEN, 
+    token, 
+    getCookieOptions(maxAge)
+  )
   return refreshTokenSerialize
 }
 
 export function cookieVerify(cookie: any) {
-  const accessToken = cookie.get(ACCESS_TOKEN)||''
+  const accessToken = cookie.get(ACCESS_TOKEN) || ''
   const refreshToken = cookie.get(REFRESH_TOKEN)
   const secret = process.env.JWT_SECRET || ''
-  const value: any = accessToken?.value||refreshToken?.value
+  const value: any = accessToken?.value || refreshToken?.value
   const user: any = verify(value, secret) || {}
   return { value, user, accessToken, refreshToken, secret }
 }
 
 export function clearAccessToken() {
-  return serialize(ACCESS_TOKEN, '', {
+  const options: any = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     expires: new Date(0),
-    domain: process.env.COOKIE_DOMAIN
-  })
+    maxAge: 0,
+  }
+  
+  // فقط اگر domain تعریف شده باشد اضافه کن
+  if (process.env.COOKIE_DOMAIN) {
+    options.domain = process.env.COOKIE_DOMAIN
+  }
+  
+  return serialize(ACCESS_TOKEN, '', options)
 }
 
 export function clearRefreshToken() {
-  return serialize(REFRESH_TOKEN, '', {
+  const options: any = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     expires: new Date(0),
-    domain: process.env.COOKIE_DOMAIN
-  })
+    maxAge: 0,
+  }
+  
+  // فقط اگر domain تعریف شده باشد اضافه کن
+  if (process.env.COOKIE_DOMAIN) {
+    options.domain = process.env.COOKIE_DOMAIN
+  }
+  
+  return serialize(REFRESH_TOKEN, '', options)
 }
