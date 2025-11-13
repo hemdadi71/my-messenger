@@ -5,7 +5,6 @@ import SearchInput from './SearchInput'
 import { debounce } from 'lodash'
 import FindedUser from './FindedUser'
 import NotFoundUser from './NotFoundUser'
-import { phoneNumberPattern } from '@/constants'
 import { useSearchUser } from '@/hooks/useUser'
 import { AnimatePresence } from 'framer-motion'
 
@@ -14,10 +13,7 @@ const AddContact = ({ setOpen }: { setOpen: any }) => {
   const [value, setValue] = useState('')
   const handleInputChange = debounce((inputValue: string) => {
     if (inputValue) {
-      const isPhoneNumber = phoneNumberPattern.test(inputValue)
-      const sentData = isPhoneNumber
-        ? { phoneNumber: inputValue }
-        : { userName: inputValue }
+      const sentData = { userName: inputValue }
       setValue(inputValue)
       findUserMutate(sentData)
     }
@@ -36,9 +32,7 @@ const AddContact = ({ setOpen }: { setOpen: any }) => {
             isLoading={isPending}
             id="Search"
           />
-          <p className="text-sm text-primary pl-1">
-            Find by phone number or user name
-          </p>
+          <p className="text-sm text-primary pl-1">Find by user name</p>
         </div>
         <AnimatePresence>
           {!isPending && data ? (

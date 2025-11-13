@@ -36,7 +36,7 @@ const Message = ({
       )}>
       <div className="chat-image avatar">
         <div className="w-10 h-10 rounded-full relative">
-          <Image alt="Tailwind CSS chat bubble component" src={image} fill />
+          <Image alt="Tailwind CSS chat bubble component" src={image||'/images/placeholder.jpg'} fill />
         </div>
       </div>
 
@@ -74,7 +74,10 @@ const Message = ({
         <div className="pointer-events-none flex flex-col gap-1">
           <p
             dir={isPersian ? 'rtl' : 'ltr'}
-            className={clsx('break-words',isPersian ? 'font-vazir' : 'font-poppins')}>
+            className={clsx(
+              'break-words',
+              isPersian ? 'font-vazir' : 'font-poppins'
+            )}>
             {text}
           </p>
           <time
@@ -91,7 +94,8 @@ const Message = ({
       <MobileModal
         open={mobileModal}
         setOpen={setMobileModal}
-        title="View Media" className='flex justify-center'
+        title="View Media"
+        className="flex justify-center"
         height="h-[50%]">
         <MobileViewMedia fileUrl={fileUrl} fileType={fileType} />
       </MobileModal>

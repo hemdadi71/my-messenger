@@ -4,14 +4,9 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema(
   {
-    phoneNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     userName: {
       type: String,
-      required: false,
+      required: true,
       unique: true,
     },
     firstName: {
@@ -30,14 +25,9 @@ const userSchema = new Schema(
       unique: false,
       default: [],
     },
-    otp: {
-      code: { type: Number, default: 0 },
-      expiresIn: { type: Date, default: 0 },
-    },
     image: {
       type: String,
     },
-    emailVerified: String,
 
     conversationIds: [{ type: String, required: false }],
     conversations: [{ type: String, ref: 'Conversation', required: false }],

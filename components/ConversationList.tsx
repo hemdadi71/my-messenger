@@ -13,7 +13,7 @@ import MobileModal from '@/app/mobile/components/MobileModal'
 const ConversationList = ({ conversations, isPending }: any) => {
   const { user } = useUser()
   const { content } = useRightSidebar()
-  const { conversationsData } = conversations || {}
+  const { conversations:conversationsData } = conversations || {}
   const { usersOnline } = useUserOnline()
   const { isMobile } = useIsMobile()
   return (

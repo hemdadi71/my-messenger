@@ -22,11 +22,11 @@ const MessageIdPage = () => {
 
   return (
     <div className="h-full relative">
-      <Header otherUsers={!isPending && otherUsers[0]} />
+      <Header otherUsers={!isPending && otherUsers?.[0]} />
       <ChatBox
         conversationId={conversationId}
         socket={socket}
-        otherUsers={!isPending && otherUsers[0]}
+        otherUsers={!isPending && otherUsers?.[0]}
       />
     </div>
   )

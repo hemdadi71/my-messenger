@@ -17,12 +17,12 @@ const MobileMessages = () => {
       {...mobilePageMotion}
       className="bg-white dark:bg-secondary h-full w-full pt-20">
       <div className="w-full fixed top-0 z-30 dark:bg-secondary bg-light">
-        {!isPending && <Header otherUsers={!isPending && otherUsers[0]} />}
+        {!isPending && <Header otherUsers={!isPending && otherUsers?.[0]} />}
       </div>
       <ChatBox
         conversationId={conversationId}
         socket={socket}
-        otherUsers={!isPending && otherUsers[0]}
+        otherUsers={!isPending && otherUsers?.[0]}
       />
     </motion.div>
   )

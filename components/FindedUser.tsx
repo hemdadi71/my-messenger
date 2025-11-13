@@ -14,7 +14,7 @@ import { motionDivProps } from '@/framer-motion'
 import { useUserOnline } from '@/providers/onlieUserProvider'
 
 const FindedUser = ({ data, setOpen }: { data: any; setOpen: any }) => {
-  const { image, firstName, lastName, _id: id } = data
+  const { image, firstName, lastName, _id: id } = data || {}
   const { user } = useIsSuccessUser()
   const isCurrentUser = user?._id === id
   const { isPending, data: Data, addToContactsMutate } = useAddToContacts()

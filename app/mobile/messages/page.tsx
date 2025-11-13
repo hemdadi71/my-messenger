@@ -13,9 +13,10 @@ import { motion } from 'framer-motion'
 import { mobileMessageMotion } from '@/framer-motion'
 const MobileMessagePage = () => {
   const { user } = useIsSuccessUser()
-  const { socket } = useSocketConnection('new-user-add', user._id)
+  const { socket } = useSocketConnection('new-user-add', user?._id)
   const { usersOnlineDispatch } = useUserOnline()
-  const { conversations, isPending } = useGetConversations(user._id)
+  const { conversations, isPending } = useGetConversations(user?._id)
+  console.log(conversations)
   useEffect(() => {
     socket.on('get-users', (users: any) => {
       usersOnlineDispatch(users)

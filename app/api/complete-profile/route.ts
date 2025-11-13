@@ -13,7 +13,7 @@ export const POST = async (req: Request, res: Response) => {
     const cookieStore = cookies()
     const { user } = cookieVerify(cookieStore)
     const id = user?.user?._id
-    if (!userName || !firstName || !lastName) {
+    if (!firstName || !lastName) {
       return new NextResponse('bad request', { status: 401 })
     }
     const users = await User.find({})

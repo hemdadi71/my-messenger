@@ -5,43 +5,66 @@ import { cookieVerify } from '@/utils/tokens'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export const POST = async (req: Request, res: Response) => {
+export const POST = async (req: Request) => {
   await dbConnect()
   try {
     const body = await req.json()
     const { id, name, isGroup } = body
-    const cookieStore = cookies()
-    const { user } = cookieVerify(cookieStore)
-    const currentUserId = user.user._id
-    const userIds = [id, currentUserId]
-    // Check if a conversation with the same set of users already exists
-    const existingConversation = await Conversation.findOne({
-      users: { $all: userIds },
-    })
 
-    if (existingConversation) {
-      // If conversation already exists, return it instead of creating a new one
-      return new NextResponse('Conversation already exist', { status: 401 })
+    const cookieStore = cookies()
+    const tokenData = cookieVerify(cookieStore)
+    console.log(tokenData)
+    if (!tokenData || !tokenData.user.user._id) {
+      return new NextResponse('Unauthorized', { status: 401 })
     }
-    // Create a new conversation
+
+    const currentUserId = tokenData.user.user._id
+    const userIds = [id, currentUserId].filter(Boolean)
+
+    if (userIds.length < 2) {
+      return new NextResponse('Invalid user IDs', { status: 400 })
+    }
+
+    if (!isGroup) {
+      const existingConversation = await Conversation.findOne({
+        users: { $all: userIds, $size: 2 },
+        isGroup: false,
+      })
+
+      if (existingConversation) {
+        return new NextResponse(
+          JSON.stringify({ conversation: existingConversation, message: 'Conversation already exists' }),
+          { status: 200 }
+        )
+      }
+    }
+
     const conversation = await Conversation.create({
-      name,
-      isGroup,
+      name: name || null,
+      isGroup: !!isGroup,
       users: userIds,
     })
 
-    // Update the users with the new conversation
-    await User.updateMany(
-      { _id: { $in: userIds } },
-      { $push: { conversations: conversation._id } }
-    )
-    const data = {
-      conversation,
-      message: 'Conversation created',
+    if (!conversation._id) {
+      throw new Error('Failed to create conversation')
     }
 
-    return new NextResponse(JSON.stringify(data), { status: 200 })
-  } catch (error) {
-    return new NextResponse('Internal Error', { status: 500 })
+    await User.updateMany(
+      { _id: { $in: userIds } },
+      { $addToSet: { conversations: conversation._id } }
+    )
+
+    return NextResponse.json(
+      {
+        conversation,
+        message: 'Conversation created successfully',
+      },
+      { status: 201 }
+    )
+  } catch (error: any) {
+    return new NextResponse(
+      JSON.stringify({ error: 'Internal Error', details: error.message }),
+      { status: 500 }
+    )
   }
 }
