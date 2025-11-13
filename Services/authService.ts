@@ -11,5 +11,9 @@ export function isLogin() {
   return http.get('/me').then(({ data }) => data)
 }
 export function logout() {
-  return http.get('/logout').then(({ data }) => data)
+  return http
+    .get('/logout', {
+      withCredentials: true,
+    })
+    .then(({ data }) => data)
 }

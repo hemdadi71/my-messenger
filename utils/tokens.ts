@@ -29,7 +29,7 @@ export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
   const accessTokenSerialize = serialize(ACCESS_TOKEN, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge, // would expire after 1 days,
     path: '/',
     priority: 'medium',
@@ -52,7 +52,7 @@ export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
   const refreshTokenSerialize = serialize(REFRESH_TOKEN, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge, // would expire after 1 year
     path: '/',
     priority: 'medium',
@@ -67,4 +67,24 @@ export function cookieVerify(cookie: any) {
   const value: any = accessToken?.value||refreshToken?.value
   const user: any = verify(value, secret) || {}
   return { value, user, accessToken, refreshToken, secret }
+}
+
+export function clearAccessToken() {
+  return serialize(ACCESS_TOKEN, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    expires: new Date(0), // مهم: تاریخ 1970
+  })
+}
+
+export function clearRefreshToken() {
+  return serialize(REFRESH_TOKEN, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    expires: new Date(0),
+  })
 }
