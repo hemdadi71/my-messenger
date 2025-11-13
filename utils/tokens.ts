@@ -33,6 +33,7 @@ export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
     maxAge, // would expire after 1 days,
     path: '/',
     priority: 'medium',
+    domain: process.env.COOKIE_DOMAIN
   })
   return accessTokenSerialize
 }
@@ -56,6 +57,7 @@ export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
     maxAge, // would expire after 1 year
     path: '/',
     priority: 'medium',
+    domain: process.env.COOKIE_DOMAIN
   })
   return refreshTokenSerialize
 }
@@ -75,7 +77,8 @@ export function clearAccessToken() {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    expires: new Date(0), // مهم: تاریخ 1970
+    expires: new Date(0),
+    domain: process.env.COOKIE_DOMAIN
   })
 }
 
@@ -86,5 +89,6 @@ export function clearRefreshToken() {
     sameSite: 'lax',
     path: '/',
     expires: new Date(0),
+    domain: process.env.COOKIE_DOMAIN
   })
 }
