@@ -10,4 +10,4 @@ export const firstNamePattern = /^(?:\S\s*){3,}$/
 export const lastNamePattern = /^(?:\S\s*){4,}$/
 export const userNamePattern = /^(?:\S\s*){4,}$/
 
-export const socketUrl = 'http://localhost:3001' // https://mysocket.liara.run    or   http://localhost:3001
+export const socketUrl = 'https://mysocket.liara.run' // https://mysocket.liara.run    or   http://localhost:3001

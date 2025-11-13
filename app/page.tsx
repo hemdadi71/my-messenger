@@ -10,27 +10,25 @@ export default function Home() {
   const { user, isLoading, isMobile, pathName, conversationId } =
     useIsSuccessUser() || {}
   const router = useRouter()
-
   useLayoutEffect(() => {
     if (!user || isLoading) return
-
     if (!user.firstName || !user.lastName) {
       const path = isMobile ? '/mobile/completeProfile' : '/completeProfile'
-      router.replace(path)
+      router.push(path)
       return
     }
 
     if (isMobile) {
       if (conversationId) {
-        router.replace(`/mobile/messages/${conversationId}`)
+        router.push(`/mobile/messages/${conversationId}`)
       } else {
-        router.replace('/mobile/messages')
+        router.push('/mobile/messages')
       }
     } else {
       if (conversationId && pathName?.includes('/messages/')) {
-        router.replace(`/messages/${conversationId}`)
+        router.push(`/messages/${conversationId}`)
       } else {
-        router.replace('/messages')
+        router.push('/messages')
       }
     }
   }, [user, isLoading, isMobile, router, conversationId, pathName])

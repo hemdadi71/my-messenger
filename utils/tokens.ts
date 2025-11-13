@@ -29,7 +29,7 @@ export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
   const accessTokenSerialize = serialize(ACCESS_TOKEN, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'strict',
     maxAge, // would expire after 1 days,
     path: '/',
     priority: 'medium',
@@ -52,7 +52,7 @@ export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
   const refreshTokenSerialize = serialize(REFRESH_TOKEN, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'strict',
     maxAge, // would expire after 1 year
     path: '/',
     priority: 'medium',
