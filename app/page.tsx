@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex items-center justify-center bg-light dark:bg-secondary">
-      <p>Moving to page</p>
+      <Loading width={100} height={100} />
     </div>
   )
 }
