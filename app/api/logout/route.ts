@@ -1,23 +1,15 @@
-import { setAccessToken, setRefreshToken } from '@/utils/tokens'
+// app/api/auth/logout/route.ts
 import { NextResponse } from 'next/server'
+import { clearAccessToken, clearRefreshToken } from '@/utils/tokens'
+import { cookies } from 'next/headers'
 
-export const GET = async (req: Request, res: Response) => {
-  const options = {
-    user: null,
-    maxAge: -1,
-  }
-  const Message = {
-    message: 'Successfully Logout From Account',
-  }
-  try {
-    const accessToken = setAccessToken(options)
-    const refreshToken = setRefreshToken(options)
-    const seralized: any = [accessToken, refreshToken]
-    return new NextResponse(JSON.stringify(Message), {
-      status: 200,
-      headers: { 'Set-Cookie': seralized },
-    })
-  } catch (error) {
-    return new NextResponse('Internal Error', { status: 500 })
-  }
+export const GET = async () => {
+  const cookie = cookies()
+  cookie.delete('accessToken')
+  cookie.delete('refreshToken')
+  const response = NextResponse.json(
+    { message: 'Successfully Logout From Account' },
+    { status: 200 }
+  )
+  return response
 }

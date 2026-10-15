@@ -18,7 +18,7 @@ const ConversationCard = ({
   isOnline,
   isMobile,
 }: any) => {
-  const { firstName, lastName, image } = conversation
+  const { firstName, lastName, image } = conversation || {}
   const [isOpen, setIsOpen] = useState(false)
   const [isMobileModal, setIsMobileModalOpen] = useState(false)
   const params = useParams()
@@ -41,7 +41,9 @@ const ConversationCard = ({
         {...motionDivProps}
         className={clsx(
           ' dark:hover:bg-slate-800 hover:bg-slate-300 hover:rounded-lg border-b dark:border-b-neutral-700 hover:border-b-0',
-          isActive ? 'dark:bg-slate-800 bg-slate-300 rounded-md border-b-0' : 'bg-transparent'
+          isActive
+            ? 'dark:bg-slate-800 bg-slate-300 rounded-md border-b-0'
+            : 'bg-transparent'
         )}>
         <div
           onClick={handleGoToMessages}
@@ -94,11 +96,11 @@ const ConversationCard = ({
         height="h-[30%]">
         <div className="flex items-center justify-center">
           <DeleteConversation
-              conversationId={conversationId}
-              user={user}
-              setIsOpen={setIsMobileModalOpen}
-              isOnline={isOnline}
-            />
+            conversationId={conversationId}
+            user={user}
+            setIsOpen={setIsMobileModalOpen}
+            isOnline={isOnline}
+          />
         </div>
       </MobileModal>
     </>

@@ -21,7 +21,7 @@ const ContactCard = ({ data, isOnline }: any) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isMobileModal, setIsMobileModalOpen] = useState(false)
   const { isMobile } = useIsMobile()
-  const { firstName, lastName, image, createdAt, _id: id } = data
+  const { firstName, lastName, image, createdAt, _id: id } = data || {}
   const joinDate = createdAt.split('T')[0].split('-').join('/')
   const { isPending, addConversationMutate } = useAddConversation()
   const attrs = useLongPress(() => setIsMobileModalOpen(true), {
@@ -29,7 +29,7 @@ const ContactCard = ({ data, isOnline }: any) => {
   })
   const router = useRouter()
   const { user } = useUser()
-  const { firstName: currentFirstName, lastName: currentLastName } = user
+  const { firstName: currentFirstName, lastName: currentLastName } = user || {}
   const handleAddConversation = () => {
     if (isMobile) {
       const sendData = {

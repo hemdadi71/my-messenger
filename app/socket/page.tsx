@@ -11,14 +11,13 @@ export default function Home() {
   const [roomId, setroomId] = useState('')
 
   var socket: any
-  socket = io('http://localhost:3001')
+  socket = io("https://node-js-socket-io-eight.vercel.app")
 
   const handleJoin = () => {
     if (userName !== '' && roomId !== '') {
       console.log(userName, 'userName', roomId, 'roomId')
       socket.emit('join_room', roomId)
       setShowSpinner(true)
-      // You can remove this setTimeout and add your own logic
       setTimeout(() => {
         setShowChat(true)
         setShowSpinner(false)

@@ -17,7 +17,7 @@ const ProfileSettingForm = () => {
   const { user } = useUser()
   const { isMount } = useHyderation(user)
   const router = useRouter()
-  const { firstName, lastName, image, userName } = user
+  const { firstName, lastName, image, userName } = user || {}
   const pathName = usePathname()
   const {
     handleSubmit,
@@ -98,7 +98,6 @@ const ProfileSettingForm = () => {
             defaultValue={userName}
             label="User name"
             errors={errors}
-            required
             pattern={userNamePattern}
             text="user name is invalid"
             id="userName"

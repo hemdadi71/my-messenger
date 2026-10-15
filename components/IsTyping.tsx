@@ -10,7 +10,7 @@ const IsTyping = ({ otherUsers }: any) => {
         <div className="w-10 h-10 rounded-full relative">
           <Image
             alt="Tailwind CSS chat bubble component"
-            src={otherUsers?.image}
+            src={otherUsers?.image||'/images/placeholder.jpg'}
             fill
           />
         </div>

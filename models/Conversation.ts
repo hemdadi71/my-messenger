@@ -39,6 +39,8 @@ const MessageSchema = new Schema(
   { timestamps: true }
 )
 
+ConversationSchema.index({ users: 1 })
+
 const Conversation =
   mongoose.models.Conversation ||
   mongoose.model('Conversation', ConversationSchema)

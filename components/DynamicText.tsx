@@ -18,7 +18,6 @@ const DynamicText: React.FC<DynamicTextProps> = ({ children }) => {
       }
     }
 
-    // Run the checkOverflow function when the page loads and after any content changes
     checkOverflow()
     window.addEventListener('resize', checkOverflow)
 

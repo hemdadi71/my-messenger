@@ -1,14 +1,11 @@
-// libs/initMiddleware.ts
 
 import Cors from 'cors';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// Initialize CORS middleware
 const cors = Cors({
   methods: ['GET', 'HEAD', 'POST'],
 });
 
-// Helper function to initialize middleware
 export default function initMiddleware(
   middleware: (
     req: NextApiRequest,

@@ -8,6 +8,8 @@ export const POST = async (req: Request, res: Response) => {
     const body = await req.json()
     const { id } = body
     const messages = await Message.find({ conversationId: id })
+      .sort({ _id: 1 })
+      .lean()
     return NextResponse.json(messages)
   } catch (error) {
     return new NextResponse('Internal Error', { status: 500 })

@@ -19,9 +19,6 @@ const DrawerHeader = () => {
               <p>{firstName}</p>
               <p>{lastName}</p>
             </div>
-            <div className="text-sm">
-              <p>{formatPhoneNumber(phoneNumber)}</p>
-            </div>
           </div>
         </div>
         <div>

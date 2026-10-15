@@ -1,8 +1,6 @@
-import { ACCESS_TOKEN } from '@/constants'
 import dbConnect from '@/libs/dbConnect'
 import User from '@/models/User'
-import { verify } from 'jsonwebtoken'
-import { cookies } from 'next/headers'
+import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
 
 export const POST = async (req: Request, res: Response) => {
@@ -17,20 +15,20 @@ export const POST = async (req: Request, res: Response) => {
       })
     }
 
-    const user = await User.findById(id)
-    const contactsIdArray = user?.contacts
-    const users = await User.find({})
-    const contactsData: any = []
+    const user: any = await User.findById(id).lean()
+    const contactsIdArray: string[] = (user?.contacts || []).map(String)
+    const validIds = contactsIdArray.filter(contactId =>
+      mongoose.isValidObjectId(contactId)
+    )
 
-    contactsIdArray.map((contactId: string) => {
-      users.forEach(user => {
-        if (contactId === user?._id.toString()) {
-          contactsData.push(user)
-          return
-        }
-      })
-      return null // This line was incorrectly returning `user`, it should be `null`.
-    })
+    const found: any[] = validIds.length
+      ? await User.find({ _id: { $in: validIds } }).lean()
+      : []
+
+    const byId = new Map<string, any>(found.map(u => [u._id.toString(), u]))
+    const contactsData = contactsIdArray
+      .map(contactId => byId.get(contactId))
+      .filter(Boolean)
 
     return NextResponse.json(contactsData)
   } catch (error) {

@@ -18,7 +18,7 @@ interface MessagesLayoutProps {
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { user } = useIsSuccessUser()
-  const { socket } = useSocketConnection('new-user-add', user._id)
+  const { socket } = useSocketConnection('new-user-add', user?._id)
   const { isMobile } = useIsMobile()
   const [open, setOpen] = useState(false)
   return (

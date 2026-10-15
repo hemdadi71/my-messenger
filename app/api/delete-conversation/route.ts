@@ -11,11 +11,9 @@ export const POST = async (req: Request, res: Response) => {
     const body = await req.json()
     const { id } = body
 
-    // Get the user from the cookie
     const cookieStore = cookies()
     const { user } = cookieVerify(cookieStore)
 
-    // Find the conversation
     const conversation = await Conversation.findOne({
       _id: id,
       users: user.user._id,
@@ -25,13 +23,11 @@ export const POST = async (req: Request, res: Response) => {
       return new NextResponse('Conversation not found', { status: 404 })
     }
 
-    // Remove the conversation ID from users
     await User.updateMany(
       { _id: { $in: conversation.users } },
       { $pull: { conversations: id } }
     )
 
-    // Delete the conversation
     await Conversation.deleteOne({ _id: id })
 
     return NextResponse.json({

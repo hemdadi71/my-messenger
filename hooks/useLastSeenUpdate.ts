@@ -5,7 +5,7 @@ export function useLastSeenUpdate(data: any) {
   useEffect(() => {
     const updateInterval = setInterval(() => {
       lastSeenUpdate(data)
-    }, 1 * 60 * 1000) // every 5 minutes
+    }, 1 * 60 * 1000)
     return () => {
       clearInterval(updateInterval)
     }

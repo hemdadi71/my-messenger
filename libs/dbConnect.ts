@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { cache } from 'react'
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -30,6 +29,8 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 8000,
     }
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then(mongoose => {

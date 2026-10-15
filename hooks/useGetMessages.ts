@@ -4,7 +4,7 @@ import { FieldValues } from 'react-hook-form'
 export function useGetMessages(id: FieldValues) {
   const { data: messages, isPending } = useQuery({
     queryFn: () => getMessages({ id }),
-    queryKey: ['get-messages'],
+    queryKey: ['get-messages', id],
   })
   return { messages, isPending }
 }

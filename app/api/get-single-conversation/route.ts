@@ -8,9 +8,8 @@ import { NextResponse } from 'next/server'
 export const POST = async (req: Request, res: Response) => {
   await dbConnect()
   try {
-    const body = await req.json() // Assuming you pass the conversationId as a query parameter
+    const body = await req.json()
     const { conversationId } = body
-    // Validate if conversationId is provided
     if (!conversationId) {
       return new NextResponse(
         JSON.stringify({
@@ -25,13 +24,12 @@ export const POST = async (req: Request, res: Response) => {
     const { user } = cookieVerify(cookieStore)
     const id = user.user._id
 
-    // Fetch user and populate the specified conversation
     const dataBaseUser = await User.findById(id).populate({
       path: 'conversations',
       match: { _id: conversationId },
       populate: {
         path: 'users',
-        select: 'userName image firstName lastName lastSeen', // Select the fields you want to retrieve
+        select: 'userName image firstName lastName lastSeen',
       },
     })
 
@@ -52,7 +50,6 @@ export const POST = async (req: Request, res: Response) => {
       )
     }
 
-    // Extract information about other users in the conversation
     const otherUsers = singleConversation.users.filter(
       (u: any) => u._id.toString() !== id
     )

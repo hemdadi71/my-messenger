@@ -1,17 +1,57 @@
 'use client'
-import GetOtpForm from '@/components/Auth/GetOtpForm'
-import Demo from '@/components/Demo'
+import AuthForm from '@/components/Auth/AuthForm'
+import Loading from '@/components/Loading'
+import { Toggler } from '@/components/Toggler'
 import useIsSuccessUser from '@/hooks/useIsSuccessUser'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLayoutEffect } from 'react'
 
 export default function Home() {
-  const { user } = useIsSuccessUser()
-  return (
-    <>
-      <div className="md:bg-[url(/images/wall.jpg)] dark:bg-secondary bg-light bg-cover h-full overflow-hidden font-poppins">
-        <GetOtpForm />
-        <Demo />
+  const { user, isLoading, isMobile, pathName, conversationId } =
+    useIsSuccessUser() || {}
+  const router = useRouter()
+  useLayoutEffect(() => {
+    if (!user || isLoading) return
+    if (!user.firstName || !user.lastName) {
+      const path = isMobile ? '/mobile/completeProfile' : '/completeProfile'
+      router.push(path)
+      return
+    }
+
+    if (isMobile) {
+      if (conversationId) {
+        router.push(`/mobile/messages/${conversationId}`)
+      } else {
+        router.push('/mobile/messages')
+      }
+    } else {
+      if (conversationId && pathName?.includes('/messages/')) {
+        router.push(`/messages/${conversationId}`)
+      } else {
+        router.push('/messages')
+      }
+    }
+  }, [user, isLoading, isMobile, router, conversationId, pathName])
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-light dark:bg-secondary">
+        <Loading width={100} height={100} />
       </div>
-    </>
+    )
+  }
+  if (!user) {
+    return (
+      <div className="dark:bg-secondary bg-light bg-cover h-full overflow-hidden font-poppins">
+        <Toggler />
+        <AuthForm />
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-screen flex items-center justify-center bg-light dark:bg-secondary">
+      <Loading width={100} height={100} />
+    </div>
   )
 }
