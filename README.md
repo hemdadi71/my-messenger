@@ -63,3 +63,4 @@ Open [http://localhost:3000](http://localhost:3000).
 ---
 
 **Built with Next.js, React, TypeScript, and modern real-time technologies.**
+
