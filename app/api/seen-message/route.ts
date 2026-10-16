@@ -15,7 +15,7 @@ export const PUT = async (req: Request, res: Response) => {
     const updatedMessases = await Message.updateMany(
       {
         conversationId,
-        senderId: { $ne: user._id }, // Messages where senderId is not equal to the user's _id
+        senderId: { $ne: user?.user?._id }, // Messages where senderId is not equal to the user's _id
         seen: false, // Only update messages that haven't been seen
       },
       { $set: { seen: true } }

@@ -17,7 +17,7 @@ const AddContact = ({ setOpen }: { setOpen: any }) => {
       setValue(inputValue)
       findUserMutate(sentData)
     }
-  }, 2000)
+  }, 500)
   return (
     <>
       <div className="p-2 font-poppins flex flex-col gap-3">

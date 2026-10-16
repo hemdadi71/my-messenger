@@ -1,8 +1,5 @@
-import { ACCESS_TOKEN } from '@/constants'
 import dbConnect from '@/libs/dbConnect'
 import User from '@/models/User'
-import { verify } from 'jsonwebtoken'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
 export const POST = async (req: Request, res: Response) => {
@@ -10,11 +7,12 @@ export const POST = async (req: Request, res: Response) => {
   try {
     const body = await req.json()
     const { userName } = body
-    const { phoneNumber } = body
-    const users = await User.find({})
-    const user = users.find(
-      user => user?.phoneNumber === phoneNumber || user?.userName === userName
-    )
+    if (!userName || typeof userName !== 'string') {
+      return new NextResponse('User not found', { status: 400 })
+    }
+    // قبلاً همه‌ی کاربرها خوانده می‌شد (و چون phoneNumber در اسکیما نیست،
+    // همیشه اولین کاربر دیتابیس برمی‌گشت). حالا فقط یک کوئری با ایندکس unique
+    const user = await User.findOne({ userName }).lean()
     if (!user) {
       return new NextResponse('User not found', { status: 400 })
     }

@@ -9,6 +9,12 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    // select: false => در کوئری‌های عادی برنمی‌گردد؛ فقط با .select('+password')
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
     firstName: {
       type: String,
       required: false,

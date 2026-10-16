@@ -21,7 +21,6 @@ const MobileMessagePage = () => {
       usersOnlineDispatch(users)
     })
   }, [])
-  useIsSuccessUser()
   return (
     <motion.div
       {...mobileMessageMotion}

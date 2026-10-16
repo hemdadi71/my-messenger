@@ -5,6 +5,9 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import mongoose from 'mongoose'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // --- تعریف نوع‌ها ---
 interface PopulatedUser {
   _id: mongoose.Types.ObjectId
@@ -78,7 +81,7 @@ export const GET = async (req: Request) => {
     console.error('GET /api/conversation error:', error)
     return new NextResponse(
       JSON.stringify({ error: 'Internal Error', details: error.message }),
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

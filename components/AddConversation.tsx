@@ -4,9 +4,6 @@ import { BiSolidConversation } from 'react-icons/bi'
 import { useAddConversation } from '@/hooks/useAddConversation'
 import useIsSuccessUser from '@/hooks/useIsSuccessUser'
 import Loading from './Loading'
-import { useSocketConnection } from '@/hooks/useSocketConnect'
-import { io } from 'socket.io-client'
-import { socketUrl } from '@/constants'
 import { useUser } from '@/providers/userProvider'
 
 interface AddConversationPrpos {
@@ -20,8 +17,6 @@ const AddConversation: React.FC<AddConversationPrpos> = ({
   isCurrentUser,
   setOpen,
 }) => {
-  let socket: any
-  socket = io(socketUrl)
   const { _id: id, firstName, lastName } = data
   const { user } = useUser()
   const { firstName: currentFirstName, lastName: currentLastName } = user

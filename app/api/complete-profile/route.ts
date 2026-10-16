@@ -16,9 +16,10 @@ export const POST = async (req: Request, res: Response) => {
     if (!firstName || !lastName) {
       return new NextResponse('bad request', { status: 401 })
     }
-    const users = await User.find({})
-    const otherUsers = users.filter(user => user?._id.toString() !== id)
-    const existUserName = otherUsers.find(user => user?.userName === userName)
+    // قبلاً کل کاربرها خوانده می‌شد؛ حالا فقط یک کوئری ایندکس‌دار
+    const existUserName = userName
+      ? await User.exists(id ? { userName, _id: { $ne: id } } : { userName })
+      : null
     if (!!existUserName) {
       return new NextResponse('This user name is already used', {
         status: 401,

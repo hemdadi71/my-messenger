@@ -28,14 +28,23 @@ const MessagesBox = ({
   const { handleContextMenu, popover } = usePopover()
   const [open, setOpen] = useState(false)
   useEffect(() => {
-    socket.on(
-      'setIsTyping',
-      ({ isTyping, userId }: { isTyping: boolean; userId: string }) => {
-        setIsTyping(isTyping)
-        setUserId(userId)
-      }
-    )
-  }, [isTyping, userId])
+    // قبلاً با هر تغییر isTyping/userId یک listener جدید اضافه می‌شد و هیچ‌وقت
+    // برداشته نمی‌شد؛ با طولانی شدن چت تعداد handlerها زیاد می‌شد
+    const handler = ({
+      isTyping,
+      userId,
+    }: {
+      isTyping: boolean
+      userId: string
+    }) => {
+      setIsTyping(isTyping)
+      setUserId(userId)
+    }
+    socket.on('setIsTyping', handler)
+    return () => {
+      socket.off('setIsTyping', handler)
+    }
+  }, [socket])
 
   return (
     <>

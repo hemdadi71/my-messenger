@@ -19,6 +19,10 @@ const MessageSchema = new Schema({
   image: String,
 })
 
+// ایندکس‌ها: بدون این‌ها هر باز کردن گفتگو کل کالکشن را می‌خواند
+MessageSchema.index({ conversationId: 1, _id: 1 })
+MessageSchema.index({ id: 1 })
+
 const Message =
   mongoose.models.Message || mongoose.model('Message', MessageSchema)
 export default Message
