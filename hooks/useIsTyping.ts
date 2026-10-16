@@ -1,18 +1,72 @@
-export function useIsTyping(socket: any, userId: string) {
-  let timeout: any
-  let isTyping: any
-  function timeoutFunction() {
-    isTyping = false
-    socket.emit('isTyping', { isTyping: false, userId })
-  }
-  function handleIsTyping(value:string) {
-    if (value!=='') {
-      isTyping = true
-      socket.emit('isTyping', { isTyping: true, userId })
-    } else {
-      clearTimeout(timeout)
-      timeout = setTimeout(timeoutFunction, 1000)
+import {
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react'
+
+export function useIsTyping(
+  socket: any,
+  userId: string,
+  conversationId: string
+) {
+  const timer = useRef<
+    ReturnType<typeof setTimeout> | null
+  >(null)
+
+  const stopTyping = useCallback(() => {
+    if (timer.current) {
+      clearTimeout(timer.current)
     }
+
+    timer.current = null
+
+    if (socket.connected && userId) {
+      socket.emit('isTyping', {
+        conversationId,
+        userId,
+        isTyping: false,
+      })
+    }
+  }, [socket, userId, conversationId])
+
+  const handleIsTyping = useCallback(
+    (value: string) => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+      }
+
+      if (!value.trim()) {
+        stopTyping()
+        return
+      }
+
+      if (socket.connected && userId) {
+        socket.emit('isTyping', {
+          conversationId,
+          userId,
+          isTyping: true,
+        })
+      }
+
+      timer.current = setTimeout(
+        stopTyping,
+        1200
+      )
+    },
+    [
+      socket,
+      userId,
+      conversationId,
+      stopTyping,
+    ]
+  )
+
+  useEffect(() => {
+    return stopTyping
+  }, [stopTyping])
+
+  return {
+    handleIsTyping,
+    stopTyping,
   }
-  return { handleIsTyping }
 }

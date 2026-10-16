@@ -1,13 +1,24 @@
+import { useSocketConnection } from '@/hooks/useSocketConnect'
 import { addConversation } from '@/Services/conversationService'
 import { useRightSidebar } from '@/providers/SidebarProvider'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 export function useAddConversation() {
   const router = useRouter()
+
+  const { socket } =
+    useSocketConnection('', undefined)
+
   const queryClient = useQueryClient()
-  const { contentDispatch } = useRightSidebar()
+
+  const { contentDispatch } =
+    useRightSidebar()
+
   const {
     data,
     isPending,
@@ -15,13 +26,36 @@ export function useAddConversation() {
   } = useMutation({
     mutationFn: addConversation,
     mutationKey: ['add-conversation'],
-    onSuccess: ({ message, conversation }) => {
-      contentDispatch('CONVERSATIONSLIST')
-      queryClient.invalidateQueries({ queryKey: ['get-conversations'] })
-      router.push(`/messages/${conversation?._id}`)
+
+    onSuccess: ({
+      message,
+      conversation,
+    }) => {
+      socket.emit('conversation-added')
+
+      contentDispatch(
+        'CONVERSATIONSLIST'
+      )
+
+      void queryClient.invalidateQueries({
+        queryKey: ['get-conversations'],
+      })
+
+      router.push(
+        `/messages/${conversation?._id}`
+      )
+
       toast.success(message)
     },
-    onError: (error: any) => console.log(error),
+
+    onError: (error: any) => {
+      console.log(error)
+    },
   })
-  return { data, isPending, addConversationMutate }
+
+  return {
+    data,
+    isPending,
+    addConversationMutate,
+  }
 }
