@@ -10,8 +10,6 @@ export const POST = async (req: Request, res: Response) => {
     if (!userName || typeof userName !== 'string') {
       return new NextResponse('User not found', { status: 400 })
     }
-    // قبلاً همه‌ی کاربرها خوانده می‌شد (و چون phoneNumber در اسکیما نیست،
-    // همیشه اولین کاربر دیتابیس برمی‌گشت). حالا فقط یک کوئری با ایندکس unique
     const user = await User.findOne({ userName }).lean()
     if (!user) {
       return new NextResponse('User not found', { status: 400 })

@@ -11,12 +11,11 @@ export const PUT = async (req: Request, res: Response) => {
     const { conversationId } = body
     const cookieStore = cookies()
     const { user } = cookieVerify(cookieStore)
-    // Update the 'seen' status of messages
     const updatedMessases = await Message.updateMany(
       {
         conversationId,
-        senderId: { $ne: user?.user?._id }, // Messages where senderId is not equal to the user's _id
-        seen: false, // Only update messages that haven't been seen
+        senderId: { $ne: user?.user?._id },
+        seen: false,
       },
       { $set: { seen: true } }
     )

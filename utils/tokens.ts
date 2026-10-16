@@ -12,9 +12,6 @@ interface SetToken {
   maxAge?: any
 }
 
-// نکته: عمداً Domain روی کوکی ست نمی‌شود.
-// فرانت و API هر دو روی یک origin هستند (/api)، پس کوکی «host-only» کافی است.
-// مقدار COOKIE_DOMAIN قبلی (https://...) اصلاً دامنه‌ی معتبر نبود و باعث رد شدن کوکی می‌شد.
 const getCookieOptions = (maxAge?: number) => {
   const options: any = {
     httpOnly: true,
@@ -31,7 +28,6 @@ const getCookieOptions = (maxAge?: number) => {
   return options
 }
 
-// توجه: این توابع «رشته‌ی کامل Set-Cookie» برمی‌گردانند، نه خود توکن.
 export function setAccessToken({ user, maxAge = ACCESS_MAX_AGE }: SetToken) {
   const secret = process.env.JWT_SECRET || ''
 
@@ -48,7 +44,6 @@ export function setRefreshToken({ user, maxAge = REFRESH_MAX_AGE }: SetToken) {
   return serialize(REFRESH_TOKEN, token, getCookieOptions(maxAge))
 }
 
-// فقط کوکی‌ها را می‌خواند؛ هیچ verify ای انجام نمی‌دهد و خطا پرتاب نمی‌کند.
 export function getAuthCookies(cookie: any) {
   const accessToken = cookie.get(ACCESS_TOKEN)
   const refreshToken = cookie.get(REFRESH_TOKEN)
@@ -56,8 +51,6 @@ export function getAuthCookies(cookie: any) {
   return { accessToken, refreshToken, secret }
 }
 
-// رفتار قبلی حفظ شده (برای بقیه‌ی روت‌ها): اگر توکن نباشد یا نامعتبر باشد خطا پرتاب می‌شود.
-// خروجی: user = { user: { _id, userName }, iat, exp }
 export function cookieVerify(cookie: any) {
   const { accessToken, refreshToken, secret } = getAuthCookies(cookie)
   const value: any = accessToken?.value || refreshToken?.value

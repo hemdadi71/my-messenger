@@ -10,4 +10,3 @@ export const firstNamePattern = /^(?:\S\s*){3,}$/
 export const lastNamePattern = /^(?:\S\s*){4,}$/
 export const userNamePattern = /^(?:\S\s*){4,}$/
 
-export const socketUrl = 'https://node-js-socket-1mecb04y3-hemdadi71gmailcoms-projects.vercel.app' // https://mysocket.liara.run    or   http://localhost:3001

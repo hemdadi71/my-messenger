@@ -1,4 +1,3 @@
-// Your client-side code (e.g., in a React component or a separate JavaScript/TypeScript file)
 
 export async function useConnectToSocket(id: string) {
   try {
@@ -8,7 +7,6 @@ export async function useConnectToSocket(id: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        // Include any necessary data for your socket connection
         socketId: id,
       }),
     })

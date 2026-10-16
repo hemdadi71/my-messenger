@@ -7,7 +7,6 @@ import { getSingleConversation } from '@/Services/conversationService'
 import { useUser } from '@/providers/userProvider'
 import { useUserOnline } from '@/providers/onlieUserProvider'
 
-// اتصال‌های فعال همین تب مرورگر
 const connectedSockets = new Set<Socket>()
 
 export function useSocketConnection(
@@ -15,8 +14,10 @@ export function useSocketConnection(
   roomId?: string | string[],
 ) {
   const [socket] = useState(() =>
-    io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001', {
+    io('https://node-js-socket-io-eight.vercel.app', {
       autoConnect: false,
+      transports: ['websocket'],
+      reconnection: true,
     }),
   )
 

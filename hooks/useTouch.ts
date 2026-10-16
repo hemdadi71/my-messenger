@@ -5,7 +5,7 @@ export function useTouch(setIsOpen: any) {
   const handleTouchStart = () => {
     touchTimeoutRef.current = window.setTimeout(() => {
       setIsOpen(true)
-    }, 1000) // Adjust the duration of touch and hold as needed
+    }, 1000)
   }
 
   const handleTouchEnd = () => {

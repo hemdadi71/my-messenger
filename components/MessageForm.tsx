@@ -25,6 +25,16 @@ import { useEditMessages } from '@/hooks/useEditMessage'
 import { useEditMessage } from '@/providers/EditMessageProvider'
 import { useUser } from '@/providers/userProvider'
 
+function createMessageId(): string {
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
+
+  return Array.from(
+    bytes,
+    byte => byte.toString(16).padStart(2, '0')
+  ).join('')
+}
+
 const MessageForm = ({
   conversationId,
   socket,
@@ -92,7 +102,7 @@ const MessageForm = ({
     const data = {
       id: editing
         ? editValue.id
-        : crypto.randomUUID(),
+        : createMessageId(),
       senderId: _id,
       text: value,
       fileUrl: file?.url,

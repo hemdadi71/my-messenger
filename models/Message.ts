@@ -11,15 +11,12 @@ const MessageSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, require: false },
   seen: { type: Boolean, default: false },
-  // seenIds: [{ type: String }],
-  // seen: [{ type: String, ref: 'User' }],
 
   conversationId: { type: String, ref: 'Conversation' },
   senderId: { type: String, ref: 'User' },
   image: String,
 })
 
-// ایندکس‌ها: بدون این‌ها هر باز کردن گفتگو کل کالکشن را می‌خواند
 MessageSchema.index({ conversationId: 1, _id: 1 })
 MessageSchema.index({ id: 1 })
 

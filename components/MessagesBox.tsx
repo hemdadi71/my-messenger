@@ -70,8 +70,6 @@ const MessagesBox = ({
       setIsTyping(data.isTyping)
       setUserId(data.userId)
 
-      // اگر طرف مقابل ناگهانی قطع شد،
-      // نشانگر روشن باقی نماند.
       if (data.isTyping) {
         timer = setTimeout(
           clearTyping,

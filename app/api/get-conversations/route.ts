@@ -8,7 +8,6 @@ import mongoose from 'mongoose'
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
-// --- تعریف نوع‌ها ---
 interface PopulatedUser {
   _id: mongoose.Types.ObjectId
   conversations: Array<{

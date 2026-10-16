@@ -21,12 +21,10 @@ export const POST = async (req: Request, res: Response) => {
       mongoose.isValidObjectId(contactId)
     )
 
-    // قبلاً کل کاربرها خوانده می‌شد؛ حالا فقط مخاطب‌ها
     const found: any[] = validIds.length
       ? await User.find({ _id: { $in: validIds } }).lean()
       : []
 
-    // ترتیب خروجی مثل قبل: به ترتیب آرایه‌ی contacts
     const byId = new Map<string, any>(found.map(u => [u._id.toString(), u]))
     const contactsData = contactsIdArray
       .map(contactId => byId.get(contactId))

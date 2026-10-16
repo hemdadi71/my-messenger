@@ -1,5 +1,3 @@
-// یک‌بار اجرا کن:  node scripts/create-indexes.js
-// (با bufferCommands:false ایندکس‌های تعریف‌شده در اسکیما خودکار ساخته نمی‌شوند)
 require('dotenv').config({ path: '.env.local' })
 const mongoose = require('mongoose')
 
@@ -11,7 +9,6 @@ async function main() {
   await db.collection('messages').createIndex({ conversationId: 1, _id: 1 })
   await db.collection('messages').createIndex({ id: 1 })
   await db.collection('conversations').createIndex({ users: 1 })
-  // userName از قبل unique است (اسکیمای User)، ولی برای اطمینان:
   await db.collection('users').createIndex({ userName: 1 }, { unique: true })
 
   for (const name of ['messages', 'conversations', 'users']) {

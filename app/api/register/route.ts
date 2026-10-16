@@ -25,13 +25,11 @@ export async function POST(req: Request) {
       password: hashedPassword,
     })
 
-    // _id باید در payload باشد؛ بقیه‌ی روت‌ها از user.user._id می‌خوانند
     const payload = { _id: user._id.toString(), userName: user.userName }
 
     const accessToken = setAccessToken({ user: payload })
     const refreshToken = setRefreshToken({ user: payload })
 
-    // بدون پسورد در پاسخ
     const { password: _password, ...safeUser } = user.toObject()
 
     const response = NextResponse.json({
@@ -39,7 +37,6 @@ export async function POST(req: Request) {
       user: safeUser,
     })
 
-    // این دو مقدار از قبل رشته‌ی کامل Set-Cookie هستند
     response.headers.append('Set-Cookie', accessToken)
     response.headers.append('Set-Cookie', refreshToken)
 

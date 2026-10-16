@@ -16,7 +16,6 @@ export const POST = async (req: Request, res: Response) => {
     if (!firstName || !lastName) {
       return new NextResponse('bad request', { status: 401 })
     }
-    // قبلاً کل کاربرها خوانده می‌شد؛ حالا فقط یک کوئری ایندکس‌دار
     const existUserName = userName
       ? await User.exists(id ? { userName, _id: { $ne: id } } : { userName })
       : null

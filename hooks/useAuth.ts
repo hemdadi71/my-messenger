@@ -5,42 +5,28 @@ import { FieldValues } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
 import { useUser } from '@/providers/userProvider'
-import {
-  login,
-  register,
-  isLogin,
-} from '@/Services/authService'
+import { login, register, isLogin } from '@/Services/authService'
 
 export type VARIANT = 'LOGIN' | 'REGISTER'
 
 export function useAuth() {
-  const [variant, setVariant] =
-    useState<VARIANT>('LOGIN')
+  const [variant, setVariant] = useState<VARIANT>('LOGIN')
 
   const router = useRouter()
   const { userDispatch } = useUser()
 
-  const {
-    isPending: isLoading,
-    mutate: authMutate,
-  } = useMutation({
-    mutationFn: async (
-      credentials: FieldValues
-    ) => {
+  const { isPending: isLoading, mutate: authMutate } = useMutation({
+    mutationFn: async (credentials: FieldValues) => {
       const result =
         variant === 'LOGIN'
           ? await login(credentials)
           : await register(credentials)
 
-      // صرف موفق بودن درخواست ورود کافی نیست؛
-      // نشست مبتنی بر کوکی نیز بررسی می‌شود.
       try {
         const session = await isLogin()
 
         if (!session?.user?._id) {
-          throw new Error(
-            'SESSION_NOT_VALID'
-          )
+          throw new Error('SESSION_NOT_VALID')
         }
 
         return {
@@ -48,12 +34,8 @@ export function useAuth() {
           user: session.user,
         }
       } catch (error: any) {
-        if (
-          error?.response?.status === 401
-        ) {
-          throw new Error(
-            'SESSION_NOT_VALID'
-          )
+        if (error?.response?.status === 401) {
+          throw new Error('SESSION_NOT_VALID')
         }
 
         throw error
@@ -61,72 +43,52 @@ export function useAuth() {
     },
 
     onSuccess: data => {
-      // فقط خود کاربر، نه کل پاسخ API
       userDispatch(data.user)
 
-      const isMobile =
-        !window.matchMedia(
-          '(min-width: 640px)'
-        ).matches
+      const isMobile = !window.matchMedia('(min-width: 640px)').matches
 
-      const prefix = isMobile
-        ? '/mobile'
-        : ''
+      const prefix = isMobile ? '/mobile' : ''
 
       const destination =
-        data.user.firstName &&
-        data.user.lastName
+        data.user.firstName && data.user.lastName
           ? '/messages'
           : '/completeProfile'
 
       toast.success(
         variant === 'LOGIN'
-          ? 'ورود موفق بود'
-          : 'ثبت‌نام موفق بود'
+          ? 'Logged in successfully'
+          : 'Registered successfully',
       )
 
-      router.replace(
-        `${prefix}${destination}`
-      )
+      router.replace(`${prefix}${destination}`)
     },
 
     onError: (error: any) => {
-      if (
-        error?.message ===
-        'SESSION_NOT_VALID'
-      ) {
+      if (error?.message === 'SESSION_NOT_VALID') {
         toast.error(
-          'درخواست موفق بود، اما نشست ورود معتبر نیست. کوکی و توکن باید بررسی شوند.'
+          'The request succeeded, but the login session is invalid. Please check the cookies and tokens.',
         )
 
         return
       }
 
-      const status =
-        error?.response?.status
+      const status = error?.response?.status
 
       if (status === 401) {
         toast.error(
-          'نام کاربری یا رمز عبور اشتباه است. بزرگی و کوچکی حروف را بررسی کن.'
+          'Incorrect username or password. Please check capitalization.',
         )
       } else if (status === 409) {
-        toast.error(
-          'این نام کاربری قبلاً ثبت شده است؛ از بخش ورود استفاده کن.'
-        )
+        toast.error('This username is already registered. Please log in.')
       } else if (status === 400) {
+        toast.error('Please check your username and password.')
+      } else if (status && status >= 500) {
         toast.error(
-          'نام کاربری و رمز عبور را بررسی کن.'
-        )
-      } else if (
-        status &&
-        status >= 500
-      ) {
-        toast.error(
-          'خطای سرور؛ لاگ درخواست در سرویس میزبانی بررسی شود.'
+          'Server error. Please check the logs on your hosting platform.',
         )
       } else {
         toast.error(
-          'درخواست ورود کامل نشد؛ اتصال اینترنت و آدرس سایت را بررسی کن.'
+          'The login request could not be completed. Please check your internet connection and the website URL.',
         )
       }
     },

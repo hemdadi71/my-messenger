@@ -21,7 +21,6 @@ export const GET = async () => {
       return unauthorized()
     }
 
-    // 1) access token معتبر
     if (accessToken?.value) {
       try {
         const data: any = verify(accessToken.value, secret)
@@ -30,11 +29,9 @@ export const GET = async () => {
           return NextResponse.json({ message: 'super top secret user', user })
         }
       } catch {
-        // منقضی/نامعتبر: می‌رویم سراغ refresh token
       }
     }
 
-    // 2) refresh token: access token جدید می‌سازیم
     if (!refreshToken?.value) return unauthorized()
 
     let data: any

@@ -9,6 +9,6 @@ export function getFileType(filename: string) {
   } else if (supportedVideoExtensions.includes(extension)) {
     return 'video'
   } else {
-    return 'unknown' // or handle other cases as needed
+    return 'unknown'
   }
 }

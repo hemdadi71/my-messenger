@@ -16,10 +16,8 @@ export const POST = async (req: Request) => {
       })
     }
 
-    // password در اسکیما select:false است، پس باید صریحاً خواسته شود
     const user = await User.findOne({ userName }).select('+password')
 
-    // یک پیام یکسان برای «کاربر نیست» و «رمز اشتباه است»
     if (
       !user ||
       !user.password ||
@@ -28,13 +26,11 @@ export const POST = async (req: Request) => {
       return new NextResponse('Invalid credentials', { status: 401 })
     }
 
-    // _id باید در payload باشد؛ بقیه‌ی روت‌ها از user.user._id می‌خوانند
     const payload = { _id: user._id.toString(), userName: user.userName }
 
     const accessToken = setAccessToken({ user: payload })
     const refreshToken = setRefreshToken({ user: payload })
 
-    // بدون پسورد در پاسخ
     const { password: _password, ...safeUser } = user.toObject()
 
     const response = NextResponse.json({
@@ -42,7 +38,6 @@ export const POST = async (req: Request) => {
       user: safeUser,
     })
 
-    // این دو مقدار از قبل رشته‌ی کامل Set-Cookie هستند
     response.headers.append('Set-Cookie', accessToken)
     response.headers.append('Set-Cookie', refreshToken)
 
